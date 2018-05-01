@@ -23,6 +23,7 @@ const INITIAL_STATE = {
   passwordOne: '',
   passwordTwo: '',
   error: null,
+  statut: ''
 };
 
 class SignUpForm extends Component {
@@ -37,17 +38,19 @@ class SignUpForm extends Component {
       username,
       email,
       passwordOne,
+      statut,
     } = this.state;
 
     const {
       history,
     } = this.props;
 
+    // Création d'un utilisateur dans l'API de Firebase
     auth.doCreateUserWithEmailAndPassword(email, passwordOne)
       .then(authUser => {
 
-        // Create a user in your own accessible Firebase Database too
-        db.doCreateUser(authUser.uid, username, email)
+        // Création d'un utilisateur dans la base de données
+        db.doCreateUser(authUser.uid, username, email, statut)
           .then(() => {
             this.setState(() => ({ ...INITIAL_STATE }));
             history.push(routes.HOME);
@@ -71,13 +74,15 @@ class SignUpForm extends Component {
       passwordOne,
       passwordTwo,
       error,
+      statut
     } = this.state;
 
     const isInvalid =
       passwordOne !== passwordTwo ||
       passwordOne === '' ||
       username === '' ||
-      email === '';
+      email === '' ||
+      statut === '';
 
     return (
       <form onSubmit={this.onSubmit}>
@@ -105,6 +110,16 @@ class SignUpForm extends Component {
           type="password"
           placeholder="Confirm Password"
         />
+        <select value={statut} id="Statut" name="Statut" onChange={event => this.setState(updateByPropertyName('statut', event.target.value))}>     
+          <option value="Collègue">Collège</option>
+          <option value="Lycée">Lycée</option>
+          <option value="Licence">Licence</option>
+          <option value="Master">Master</option>
+          <option value="Doctorat">Doctorat</option>
+          <option value="Pro">Pro</option>
+          <option value="Asso">Association</option>
+        </select>
+
         <button disabled={isInvalid} type="submit">
           Sign Up
         </button>

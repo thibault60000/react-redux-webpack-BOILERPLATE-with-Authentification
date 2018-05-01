@@ -27,6 +27,8 @@ const withAuthentication = (Component) => {
   });
 
   return connect(null, mapDispatchToProps)(WithAuthentication);
+  
 }
+
 
 export default withAuthentication;
